@@ -1,0 +1,25 @@
+#+TITLE: Part 1 - BSD scheduler summary
+
+* Algorithm
+- multi-level feedback queue
+  The traditional 4.4BSD scheduler employs a multi-level feedback queues algorithm, favoring interactive, short-running threads to CPU-bound ones.
+- If the highest-priority queue contains multiple threads, then they run in the Round-robin order.
+- The shorter the time quantum, the better the interactive response. However, longer time quanta provide higher system throughput because the system will have less overhead from doing context switches and processor caches will be flushed less often
+- The time quantum used in 4.4BSD is 0.1 seconds. This value was empirically found to be the longest quantum that could be used without loss of the desired response for interactive jobs such as editors.
+- The system adjusts the priority of a thread dynamically to reflect resource requirements (e.g., being blocked awaiting an event) and the amount of resources consumed by the thread (e.g., CPU time). Threads are moved between run queues based on changes in their scheduling priority (hence the word feedback in the name multilevel feedback queue). When a thread other than the currently running thread attains a higher priority (by having that priority either assigned or given when it is awakened), the system switches to that thread immediately if the current thread is in user mode.
+- The system tailors this short-term scheduling algorithm to favor interactive jobs by raising the scheduling priority of threads that are blocked waiting for I/O for 1 or more seconds and by lowering the priority of threads that accumulate significant amounts of CPU time.
+
+** Thread priority
+*** Calculation
+- determined directly by two values associated with the thread structure: kg_estcpu and kg_nice
+  - kg_estcpu provides an estimate of the recent CPU utilization of the thread
+  - kg_nice is a user-settable weighting factor that ranges numerically between -20 and 20. The normal value for kg_nice is 0. Negative values increase a thread's priority, whereas positive values decrease its priority.
+- A thread's user-mode scheduling priority is calculated after every four clock ticks (typically 40 milliseconds) that it has been found running by this equation:
+
+** multiprocessor
+ULE was created to support a multiCPU?
+Write this part when studying about ULE or M2.
+With the advent of multiprocessor support FreeBSD can preempt threads executing in kernel mode. However, such preemption is generally not done, so the worst-case real-time response to events is defined by the longest path through the top half of the kernel. Since the system guarantees no upper bounds on the duration of a system call, FreeBSD is decidedly not a real-time system. Attempts to retrofit BSD with real-time thread scheduling have addressed this problem in different ways [Ferrin & Langridge, 1980; Sanderson et al., 1986].
+* Pre-emtive
+- niceness
+- priority

@@ -1,0 +1,23 @@
+#+TITLE: Part 2 - Profiling
+
+Different I/O profiles exhibited
+1. Computation-driven
+   Ackermann function, generate prime numbers, calculating numbers of PI
+   Ackermann function doesn't work because
+
+   Gen prime numbers
+   total : 3.501240
+   syscalls: 0.000540
+
+2. I/O-driven
+    total : 1.461591
+    syscalls: 0.800738
+    total : 4.696198
+    syscalls: 2.368299
+
+3. Computation and I/O-driven
+
+total : 0.002357
+syscalls: 0.000645
+total : 3.335704
+syscalls: 0.913595

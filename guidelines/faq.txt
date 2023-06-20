@@ -1,0 +1,44 @@
+--
+Q: What is meant by "how priorities are represented and handled"?
+
+A: Unix schedulers have a concept of priority, where some processes/threads are given higher priority than others, in order to get more CPU time. You can see these by running "top" and adjust them by using "nice" and "renice". Every Unix scheduler needs to be able to translate these priorities (set by the user) into scheduling decisions and the question is how does this scheduler do it?
+
+--
+Q: Can I profile a program I have written?
+
+A: Yes. Please also submit the source code. With any program (your own, or an existing one), please say why it is relevant, and why you chose it.
+
+--
+Q: What sort of plot is meant by "plot the sequence of IO and CPU bursts"?
+
+A: What is meant is something like the top two diagrams in Figure 1. But any additional diagrams you find useful are OK as additional information, as long as you explain their purpose
+
+--
+Q: What is the best way to plot these diagrams?
+
+A: This is fully up to you, but we expected people to modify the profiler code to generate some sort of structured data (e.g. CSV) and load that into either Python or Excel, or something else to generate the plot. A stacked bar chart could work as a starting point. Doing them by hand is also OK, but can be a lot of work, depending on your workloads.
+
+--
+Q: There are differences between the implementations of e.g. NetBSD, OpenBSD, and FreeBSD, which one should I describe?
+
+A: Although different ariants of BSD such as NetBSD and OpenBSD are based on the same basic scheduler (the 4.4BSD scheduler), there are some implementation differences between them (and indeed between different OS versions). This can manifest itself in details such as the number of priority levels. 
+
+The implementation differences of this type are not important. As long as you  understand the basic design of the scheduler, it is OK to focus on a specific implementation and describe that (and reference your sources). You might make a point of contrasting two of them if you wish, but this is not required for a basic submission. We are much more interested in how you move from a description to application (in Part 3) and relate your understanding of the scheduling algorithm back to your description.
+
+On a similar note, we linked to the OpenBSD scheduler source code. It is perfectly fine to analyse the source code of a different implementation in Part 4 if that is what you prefer, but it has to be a variant of the 4.4BSD scheduler. To my knowledge, current NetBSD and FreeBSD implementation have this as an option (in addition to more advanced ones).
+
+--
+Q: What about the difference between kernel-space and user-space priorities in some versions of the scheduler?
+
+A: The difference between kernel and user-space processes in some of these implementations are not relevant to your task (you are only looking at user-space processes).
+
+--
+
+General comments:
+
+the profile.c code is only there to get you started. Some of you pointed out that it already prints out timestamps. If this all you need to produce the diagrams suggested in the spec, then that's fine.  You may want to reformat how time stamps are printed, or export to a CSV file for later processing, or similar -- in such a case you may want to edit the profiling code. Different people will have different approaches. 
+
+This is not a coding practical and if you don't need to modify the starter code you can leave it as it is. We won't be looking at the quality of the code for this practical except in the unlikely scenario where you change it in a way that makes it incorrect and invalidates your later analysis.
+
+Please run the profiling on an otherwise idle machine. Then you can assume that syscall time is spent servicing IO (I/O burst), and time spent in userspace is spent doing CPU burst. This is not entirely correct, but many syscalls perform IO tasks and you cannot do IO without syscalls, so it works as a first approximation.
+
